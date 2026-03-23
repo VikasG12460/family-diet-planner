@@ -53,3 +53,5 @@ export interface MonthlyPlan {
   memberName: string;
   days: Record<string, DailyMealPlan>;
 }
+
+export type HealthCondition = string;

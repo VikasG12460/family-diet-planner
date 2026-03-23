@@ -1,4 +1,3 @@
-import * as React from "react"
 
 export const Select = ({ onValueChange, children, value }: any) => {
   return (

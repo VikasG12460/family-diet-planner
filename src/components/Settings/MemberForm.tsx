@@ -33,10 +33,9 @@ export function MemberForm({ member, onSave, onCancel }: MemberFormProps) {
     if (member) {
       setFormData({
         name: member.name || '',
-        // FIX: Use optional chaining (?.) and fallback to empty string to prevent crash on null
-        age: member.age?.toString() || '',
-        height: member.height?.toString() || '',
-        weight: member.weight?.toString() || '',
+        age: member.age ? member.age.toString() : '',
+        height: member.height ? member.height.toString() : '',
+        weight: member.weight ? member.weight.toString() : '',
         gender: member.gender || 'male',
         goal: member.goal || 'maintain',
         healthConditions: member.healthConditions || ['None']
@@ -51,24 +50,33 @@ export function MemberForm({ member, onSave, onCancel }: MemberFormProps) {
     }
 
     const current = formData.healthConditions.filter(c => c !== 'None');
+
     if (current.includes(condition)) {
-      setFormData({ ...formData, healthConditions: current.filter(c => c !== condition) });
+      setFormData({
+        ...formData,
+        healthConditions: current.filter(c => c !== condition)
+      });
     } else {
-      setFormData({ ...formData, healthConditions: [...current, condition] });
+      setFormData({
+        ...formData,
+        healthConditions: [...current, condition]
+      });
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.age || !formData.height || !formData.weight) {
       alert('Please fill in all fields');
       return;
     }
 
-    const conditions = formData.healthConditions.length === 0 || formData.healthConditions.includes('None') 
-      ? ['None'] 
-      : formData.healthConditions;
+    const conditions =
+      formData.healthConditions.length === 0 ||
+      formData.healthConditions.includes('None')
+        ? ['None']
+        : formData.healthConditions;
 
     onSave({
       name: formData.name,
@@ -77,36 +85,50 @@ export function MemberForm({ member, onSave, onCancel }: MemberFormProps) {
       weight: parseInt(formData.weight),
       gender: formData.gender,
       goal: formData.goal,
-      healthConditions: conditions
+      healthConditions: conditions,
+      activityLevel: "moderate",        // ✅ required field added
+      dietaryPreference: "veg"          // ✅ required field added
     });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      
+      {/* Name */}
       <div className="space-y-2">
         <Label htmlFor="name">Full Name</Label>
         <Input
           id="name"
           placeholder="e.g. John Doe"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, name: e.target.value })
+          }
         />
       </div>
 
+      {/* Age + Gender */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="age">Age</Label>
           <Input
             id="age"
             type="number"
-            placeholder="Years"
             value={formData.age}
-            onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData({ ...formData, age: e.target.value })
+            }
           />
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="gender">Gender</Label>
-          <Select value={formData.gender} onValueChange={(val: 'male' | 'female') => setFormData({ ...formData, gender: val })}>
+          <Label>Gender</Label>
+          <Select
+            value={formData.gender}
+            onValueChange={(val: 'male' | 'female') =>
+              setFormData({ ...formData, gender: val })
+            }
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -118,43 +140,52 @@ export function MemberForm({ member, onSave, onCancel }: MemberFormProps) {
         </div>
       </div>
 
+      {/* Height + Weight */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="height">Height (cm)</Label>
+          <Label>Height (cm)</Label>
           <Input
-            id="height"
             type="number"
-            placeholder="cm"
             value={formData.height}
-            onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData({ ...formData, height: e.target.value })
+            }
           />
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="weight">Weight (kg)</Label>
+          <Label>Weight (kg)</Label>
           <Input
-            id="weight"
             type="number"
-            placeholder="kg"
             value={formData.weight}
-            onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData({ ...formData, weight: e.target.value })
+            }
           />
         </div>
       </div>
 
+      {/* Goal */}
       <div className="space-y-2">
-        <Label htmlFor="goal">Goal</Label>
-        <Select value={formData.goal} onValueChange={(val: 'maintain' | 'lose' | 'gain') => setFormData({ ...formData, goal: val })}>
+        <Label>Goal</Label>
+        <Select
+          value={formData.goal}
+          onValueChange={(val: 'maintain' | 'lose' | 'gain') =>
+            setFormData({ ...formData, goal: val })
+          }
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="maintain">Maintain Weight</SelectItem>
-            <SelectItem value="lose">Lose Weight</SelectItem>
-            <SelectItem value="gain">Gain Weight</SelectItem>
+            <SelectItem value="maintain">Maintain</SelectItem>
+            <SelectItem value="lose">Lose</SelectItem>
+            <SelectItem value="gain">Gain</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
+      {/* Health */}
       <div className="space-y-2">
         <Label>Health Conditions</Label>
         <div className="grid grid-cols-2 gap-2">
@@ -163,27 +194,28 @@ export function MemberForm({ member, onSave, onCancel }: MemberFormProps) {
               key={option.value}
               type="button"
               onClick={() => handleHealthToggle(option.value)}
-              className={`flex items-center justify-center gap-2 p-2 text-sm border rounded-md transition-colors ${
+              className={`p-2 border rounded ${
                 formData.healthConditions.includes(option.value)
-                  ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
-                  : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                  ? 'bg-green-100'
+                  : ''
               }`}
             >
-              {formData.healthConditions.includes(option.value) && (
-                <span className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
-                  <span className="text-white text-xs">✓</span>
-                </span>
-              )}
               {option.label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="flex gap-3 pt-4">
-        <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" className="flex-1">Save Member</Button>
+      {/* Buttons */}
+      <div className="flex gap-3">
+        <Button type="button" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit">
+          Save
+        </Button>
       </div>
+
     </form>
   );
 }
