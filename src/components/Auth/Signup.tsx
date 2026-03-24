@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input.tsx';
-import { Label } from '../ui/label.tsx';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 import { storage } from '../../utils/storage';
