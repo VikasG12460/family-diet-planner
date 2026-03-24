@@ -99,6 +99,7 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
               <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="name"
+                name="name"
                 type="text"
                 placeholder="John Doe"
                 className="pl-10"
@@ -114,6 +115,7 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
               <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="john@example.com"
                 className="pl-10"
@@ -129,6 +131,7 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="••••••••"
                 className="pl-10"
@@ -145,6 +148,7 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 placeholder="••••••••"
                 className="pl-10"
