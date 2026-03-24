@@ -1,33 +1,49 @@
-import * as React from "react"
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
-import { Circle } from "lucide-react"
+import * as React from "react";
 
-export const RadioGroup = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
->(({ className, ...props }, ref) => {
+type RadioGroupContextType = {
+  value?: string;
+  onValueChange?: (value: string) => void;
+};
+
+const RadioGroupContext = React.createContext<RadioGroupContextType>({});
+
+function RadioGroup({
+  value,
+  onValueChange,
+  children,
+  className,
+}: {
+  value?: string;
+  onValueChange?: (value: string) => void;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <RadioGroupPrimitive.Root
-      className={`grid gap-2 ${className}`}
-      {...props}
-      ref={ref}
+    <RadioGroupContext.Provider value={{ value, onValueChange }}>
+      <div className={className}>{children}</div>
+    </RadioGroupContext.Provider>
+  );
+}
+
+function RadioGroupItem({
+  value,
+  id,
+}: {
+  value: string;
+  id?: string;
+}) {
+  const { value: selectedValue, onValueChange } = React.useContext(RadioGroupContext);
+
+  return (
+    <input
+      type="radio"
+      id={id}
+      name="radio-group"
+      checked={selectedValue === value}
+      onChange={() => onValueChange?.(value)}
+      className="h-4 w-4 text-emerald-600 border-gray-300"
     />
-  )
-})
+  );
+}
 
-export const RadioGroupItem = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...props }, ref) => {
-  return (
-    <RadioGroupPrimitive.Item
-      ref={ref}
-      className={`aspect-square h-4 w-4 rounded-full border border-emerald-500 text-emerald-900 ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-      {...props}
-    >
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <Circle className="h-2.5 w-2.5 fill-emerald-600 text-emerald-600" />
-      </RadioGroupPrimitive.Indicator>
-    </RadioGroupPrimitive.Item>
-  )
-})
+export { RadioGroup, RadioGroupItem };
